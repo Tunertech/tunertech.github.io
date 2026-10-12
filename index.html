@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuner Tech</title>
+<meta name="description" content="Tuner Tech: обзоры девайсов для ПК и сетапов от Артёма">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: datasheet-style monochrome page. Giant wordmark + spec panel up top, then review cards, category index, scoring rules, about, contacts. */
+:root {
+  --bg: #f5f5f6;
+  --fg: #0b0b0c;
+  --muted: #5d5d63;
+  --line: #d3d3d8;
+  --soft: #ebebed;
+  --inv-bg: #0b0b0c;
+  --inv-fg: #f5f5f6;
+  --font-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --font-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0b0c;
+    --fg: #f2f2f3;
+    --muted: #9a9aa1;
+    --line: #2b2b30;
+    --soft: #151517;
+    --inv-bg: #f2f2f3;
+    --inv-fg: #0b0b0c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0b0c;
+  --fg: #f2f2f3;
+  --muted: #9a9aa1;
+  --line: #2b2b30;
+  --soft: #151517;
+  --inv-bg: #f2f2f3;
+  --inv-fg: #0b0b0c;
+  color-scheme: dark;
+}
+
+html { color-scheme: light; }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+
+.wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.muted { color: var(--muted); }
+
+/* header */
+.top {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+}
+.brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+.brand span { font-weight: 600; opacity: 0.55; }
+.nav { display: flex; align-items: center; gap: 1.5rem; }
+.nav a { text-decoration: none; }
+.nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.nav-links { display: flex; gap: 1.5rem; }
+.theme-btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 0.4rem 0.7rem;
+  min-height: 2.25rem;
+}
+.theme-btn:hover { border-color: var(--fg); }
+@media (max-width: 640px) { .nav-links { display: none; } }
+
+/* hero */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.hero .wrap {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 2.5rem 3rem;
+  align-items: end;
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+}
+.hero-main { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3rem, 15vw, 8.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+.wordmark .outline {
+  display: block;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--fg);
+  paint-order: stroke fill;
+}
+.lede { max-width: 34rem; font-size: 1.125rem; color: var(--muted); }
+.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0.7rem 1.4rem;
+  border: 1.5px solid var(--fg);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+.btn-solid { background: var(--inv-bg); color: var(--inv-fg); }
+.btn-solid:hover { background: transparent; color: var(--fg); }
+.btn-line { background: transparent; color: var(--fg); }
+.btn-line:hover { background: var(--inv-bg); color: var(--inv-fg); }
+
+.spec {
+  border: 1px solid var(--fg);
+  background: var(--bg);
+}
+.spec-head {
+  background: var(--inv-bg);
+  color: var(--inv-fg);
+  padding: 0.55rem 1rem;
+}
+.spec dl { display: grid; }
+.spec-row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--line);
+}
+.spec-row:first-child { border-top: 0; }
+.spec dt { color: var(--muted); }
+.spec dd { font-weight: 500; overflow-wrap: anywhere; }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* sections */
+.sec { padding-block: clamp(3rem, 8vw, 5.5rem); border-bottom: 1px solid var(--line); }
+.sec-head { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; max-width: 40rem; }
+.sec-head h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.sec-head p { color: var(--muted); }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.chip {
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 0.45rem 0.95rem;
+  min-height: 2.5rem;
+  font-weight: 500;
+}
+.chip:hover { border-color: var(--fg); }
+.chip[aria-pressed="true"] { background: var(--inv-bg); color: var(--inv-fg); border-color: var(--inv-bg); }
+
+/* review cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  transition: border-color 0.15s;
+}
+.card { position: relative; }
+.card:hover { border-color: var(--fg); }
+.card-link::after { content: ""; position: absolute; inset: 0; }
+.empty { padding: 1.5rem 0; }
+.card-top { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; }
+.tag { border: 1px solid var(--line); padding: 0.1rem 0.5rem; color: var(--muted); }
+.card h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.score { display: flex; flex-direction: column; gap: 0.5rem; }
+.score-num { display: flex; align-items: baseline; gap: 0.35rem; }
+.score-num strong {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.bar { height: 4px; background: var(--line); }
+.bar i { display: block; height: 100%; background: var(--fg); width: var(--w); }
+.pm { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9375rem; }
+.pm li { display: grid; grid-template-columns: 1.25rem minmax(0, 1fr); }
+.pm .sign { font-family: var(--font-mono); font-weight: 500; }
+.card-link {
+  margin-top: auto;
+  padding-top: 0.25rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.card-link:hover span { transform: translateX(4px); }
+.card-link span { transition: transform 0.15s; display: inline-block; }
+
+/* category index */
+.cats { border-top: 1px solid var(--fg); }
+.cat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 1.1rem 0.25rem;
+  transition: background-color 0.15s, color 0.15s, padding 0.15s;
+}
+.cat:hover { background: var(--inv-bg); color: var(--inv-fg); padding-inline: 1rem; }
+.cat-name { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 3.5vw, 1.5rem); }
+.cat-desc { display: block; font-size: 0.9375rem; opacity: 0.65; margin-top: 0.15rem; }
+.cat-arrow { font-size: 1.25rem; }
+
+/* scoring */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 1rem; }
+.rule { border: 1px solid var(--line); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.rule-w { font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1; }
+.rule h3 { font-weight: 600; font-size: 1.0625rem; }
+.rule p { color: var(--muted); font-size: 0.9375rem; }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 2rem 4rem; align-items: start; }
+.about-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 8vw, 4.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.about-text { display: flex; flex-direction: column; gap: 1rem; font-size: 1.125rem; max-width: 36rem; }
+@media (max-width: 760px) { .about { grid-template-columns: minmax(0, 1fr); } }
+
+/* contacts */
+.contact { background: var(--inv-bg); color: var(--inv-fg); border-bottom: 0; }
+.contact .sec-head p { color: inherit; opacity: 0.7; }
+.links { border-top: 1px solid currentColor; }
+.link-row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) auto;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+.link-row .k { opacity: 0.65; }
+.link-row .v { font-family: var(--font-mono); font-size: 1rem; overflow-wrap: anywhere; min-width: 0; }
+.link-row a.v { text-decoration: underline; text-underline-offset: 4px; }
+.mini {
+  background: transparent;
+  color: inherit;
+  border: 1px solid currentColor;
+  padding: 0.45rem 0.9rem;
+  min-height: 2.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.mini:hover { background: var(--inv-fg); color: var(--inv-bg); }
+.contact :focus-visible { outline-color: var(--inv-fg); }
+@media (max-width: 620px) {
+  .link-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .link-row .k { grid-column: 1 / -1; }
+}
+
+footer { padding-block: 2rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; color: var(--muted); }
+footer a { text-decoration: none; }
+footer a:hover { color: var(--fg); text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">TUNER <span>TECH</span></a>
+    <nav class="nav" aria-label="Разделы">
+      <div class="nav-links">
+        <a href="#reviews">Обзоры</a>
+        <a href="#categories">Категории</a>
+        <a href="#rating">Оценки</a>
+        <a href="#about">Обо мне</a>
+        <a href="#contacts">Контакты</a>
+      </div>
+      <button class="theme-btn mono" id="theme" type="button" aria-label="Переключить тему">Тема</button>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-main">
+        <p class="mono muted">Обзоры девайсов и сетапов</p>
+        <h1 class="wordmark">Tuner<span class="outline">Tech</span></h1>
+        <p class="lede">Выбираю девайсы для ПК, собираю сетапы и рассказываю, что стоит своих денег, а что лучше обойти стороной.</p>
+        <div class="cta">
+          <a class="btn btn-solid" href="https://www.youtube.com/@Tuner_device" target="_blank" rel="noopener">Смотреть на YouTube</a>
+          <a class="btn btn-line" href="https://t.me/Tuner_Device" target="_blank" rel="noopener">Telegram-канал</a>
+        </div>
+      </div>
+      <aside class="spec" aria-label="О канале">
+        <div class="spec-head mono">Паспорт канала</div>
+        <dl>
+          <div class="spec-row"><dt class="mono">Автор</dt><dd>Артём</dd></div>
+          <div class="spec-row"><dt class="mono">Тема</dt><dd>Девайсы для ПК</dd></div>
+          <div class="spec-row"><dt class="mono">Формат</dt><dd>Обзоры, подборки, сетапы</dd></div>
+          <div class="spec-row"><dt class="mono">Оценка</dt><dd>По шкале от 1 до 10</dd></div>
+          <div class="spec-row"><dt class="mono">Площадки</dt><dd>YouTube, Telegram</dd></div>
+          <div class="spec-row"><dt class="mono">Язык</dt><dd>Русский</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="sec" id="reviews">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono muted">Последние обзоры</p>
+        <h2>Новые обзоры</h2>
+        <p>Первый выпуск уже в монтаже. Загляните на канал, чтобы не пропустить его.</p>
+      </div>
+
+      <div class="filters" role="group" aria-label="Фильтр по категории">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">Все</button>
+        <button class="chip" type="button" data-filter="mouse" aria-pressed="false">Мыши</button>
+        <button class="chip" type="button" data-filter="keyboard" aria-pressed="false">Клавиатуры</button>
+        <button class="chip" type="button" data-filter="audio" aria-pressed="false">Наушники</button>
+        <button class="chip" type="button" data-filter="monitor" aria-pressed="false">Мониторы</button>
+        <button class="chip" type="button" data-filter="case" aria-pressed="false">Корпуса</button>
+        <button class="chip" type="button" data-filter="setup" aria-pressed="false">Сетапы</button>
+      </div>
+
+      <div class="grid" id="grid">
+        <article class="card" data-cat="keyboard">
+          <div class="card-top"><span class="mono muted">Клавиатуры</span><span class="tag mono">Скоро</span></div>
+          <h3>Aula F75 Max: обзор клавиатуры</h3>
+          <p class="muted">Видео сейчас в монтаже. Скоро выйдет на канале.</p>
+          <a class="card-link" href="https://www.youtube.com/@Tuner_device" target="_blank" rel="noopener">Открыть канал <span>→</span></a>
+        </article>
+        <article class="card" data-cat="setup">
+          <div class="card-top"><span class="mono muted">Сетапы</span><span class="tag mono">Скоро</span></div>
+          <h3>АПГРЕЙД сетапа ща КОПЕЙКИ | ТОВАРЫ | СОВЕТЫ | ФИШКИ</h3>
+          <p class="muted">Видео скоро выйдет на канале.</p>
+          <a class="card-link" href="https://www.youtube.com/@Tuner_device" target="_blank" rel="noopener">Открыть канал <span>→</span></a>
+        </article>
+      </div>
+      <p class="empty muted" id="empty" hidden>В этой категории обзоров пока нет. Они скоро появятся.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="categories">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono muted">Категории</p>
+        <h2>Всё, из чего собирается сетап</h2>
+        <p>Нажмите на категорию, и список обзоров выше обновится.</p>
+      </div>
+      <div class="cats">
+        <button class="cat" type="button" data-filter="mouse"><span><span class="cat-name">Мыши и коврики</span><span class="cat-desc">Сенсор, вес, форма и хват</span></span><span class="cat-arrow">↗</span></button>
+        <button class="cat" type="button" data-filter="keyboard"><span><span class="cat-name">Клавиатуры</span><span class="cat-desc">Переключатели, звук, раскладки</span></span><span class="cat-arrow">↗</span></button>
+        <button class="cat" type="button" data-filter="audio"><span><span class="cat-name">Наушники и микрофоны</span><span class="cat-desc">Звук в играх и качество голоса</span></span><span class="cat-arrow">↗</span></button>
+        <button class="cat" type="button" data-filter="monitor"><span><span class="cat-name">Мониторы</span><span class="cat-desc">Частота, матрица, отклик</span></span><span class="cat-arrow">↗</span></button>
+        <button class="cat" type="button" data-filter="case"><span><span class="cat-name">Корпуса и охлаждение</span><span class="cat-desc">Температуры, шум, удобство сборки</span></span><span class="cat-arrow">↗</span></button>
+        <button class="cat" type="button" data-filter="setup"><span><span class="cat-name">Сетапы и свет</span><span class="cat-desc">Готовые рабочие места под любой бюджет</span></span><span class="cat-arrow">↗</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="rating">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono muted">Как я ставлю оценки</p>
+        <h2>Четыре критерия, один балл из десяти</h2>
+        <p>Итог складывается из частей с разным весом. Так оценки разных девайсов можно сравнивать между собой.</p>
+      </div>
+      <div class="rules">
+        <div class="rule"><span class="rule-w">30%</span><h3>Качество и сборка</h3><p>Материалы, люфты, надёжность и то, как вещь ведёт себя после недель использования.</p></div>
+        <div class="rule"><span class="rule-w">30%</span><h3>Цена и ценность</h3><p>Сколько получаешь за свои деньги и есть ли вариант лучше за ту же сумму.</p></div>
+        <div class="rule"><span class="rule-w">25%</span><h3>Удобство</h3><p>Как девайс чувствуется в руках и на столе в играх и в обычной работе.</p></div>
+        <div class="rule"><span class="rule-w">15%</span><h3>Дизайн</h3><p>Внешний вид и то, как он вписывается в сетап.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="about">
+    <div class="wrap about">
+      <div>
+        <p class="mono muted" style="margin-bottom:1rem">Обо мне</p>
+        <h2 class="about-name">Привет, я Артём</h2>
+      </div>
+      <div class="about-text">
+        <p>Я веду канал Tuner Tech про девайсы для ПК и сетапы. Показываю, как выбрать мышь, клавиатуру, наушники и монитор, чтобы не переплатить.</p>
+        <p>Делаю обзоры, подборки и разборы рабочих мест, где приятно играть и работать. Подписывайтесь на YouTube и Telegram, чтобы не пропустить новые выпуски.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec contact" id="contacts">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="mono" style="opacity:.65">Контакты</p>
+        <h2>Сотрудничество и реклама</h2>
+        <p>По рекламе и обзорам пишите моему менеджеру в Telegram.</p>
+      </div>
+      <div class="links">
+        <div class="link-row">
+          <span class="k mono">Менеджер</span>
+          <span class="v" id="handle">@BachiraDesignMANAGER</span>
+          <span style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="mini" id="copy" type="button">Копировать</button>
+            <a class="mini" href="https://t.me/BachiraDesignMANAGER" target="_blank" rel="noopener">Написать</a>
+          </span>
+        </div>
+        <div class="link-row">
+          <span class="k mono">YouTube</span>
+          <a class="v" href="https://www.youtube.com/@Tuner_device" target="_blank" rel="noopener">youtube.com/@Tuner_device</a>
+          <span></span>
+        </div>
+        <div class="link-row">
+          <span class="k mono">Telegram</span>
+          <a class="v" href="https://t.me/Tuner_Device" target="_blank" rel="noopener">t.me/Tuner_Device</a>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap mono">
+    <span>Tuner Tech, 2026</span>
+    <a href="#top">Наверх ↑</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem("tt-theme");
+    if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  } catch (e) {}
+
+  document.getElementById("theme").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("tt-theme", next); } catch (e) {}
+  });
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll("#grid .card"));
+  var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+  function applyFilter(f) {
+    var shown = 0;
+    cards.forEach(function (c) {
+      var ok = f === "all" || c.getAttribute("data-cat") === f;
+      c.hidden = !ok;
+      if (ok) shown++;
+    });
+    document.getElementById("empty").hidden = shown > 0;
+    chips.forEach(function (c) { c.setAttribute("aria-pressed", c.getAttribute("data-filter") === f ? "true" : "false"); });
+  }
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () { applyFilter(c.getAttribute("data-filter")); });
+  });
+  Array.prototype.slice.call(document.querySelectorAll(".cat")).forEach(function (c) {
+    c.addEventListener("click", function () {
+      applyFilter(c.getAttribute("data-filter"));
+      var t = document.getElementById("reviews");
+      if (t && t.scrollIntoView) t.scrollIntoView();
+    });
+  });
+
+  var copyBtn = document.getElementById("copy");
+  var handle = document.getElementById("handle");
+  function label(t) {
+    copyBtn.textContent = t;
+    setTimeout(function () { copyBtn.textContent = "Копировать"; }, 2000);
+  }
+  copyBtn.addEventListener("click", function () {
+    function fallback() {
+      try {
+        var r = document.createRange();
+        r.selectNodeContents(handle);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+      } catch (e) {}
+      label("Выделено");
+    }
+    try {
+      navigator.clipboard.writeText("@BachiraDesignMANAGER").then(function () { label("Скопировано"); }, fallback);
+    } catch (e) { fallback(); }
+  });
+})();
+</script>
+
+</body>
+</html>
